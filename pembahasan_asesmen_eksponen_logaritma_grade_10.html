@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembahasan Interaktif - Asesmen Eksponen & Logaritma Grade 10</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MathJax Configuration and Script -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .math-box {
+            overflow-x: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Top Navbar -->
+    <header class="bg-indigo-900 text-white sticky top-0 z-40 shadow-md border-b border-indigo-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 p-2.5 rounded-xl text-white font-bold text-xl flex items-center justify-center w-10 h-10 shadow-inner">
+                    <i class="fa-solid fa-square-root-variable"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight">Asesmen Eksponen & Logaritma</h1>
+                    <p class="text-xs text-indigo-200">Matematika SMA Grade 10 - Pembahasan Interaktif</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <button onclick="toggleFormulaModal()" class="bg-indigo-800 hover:bg-indigo-700 text-indigo-100 text-xs sm:text-sm px-3 py-2 rounded-lg font-medium transition flex items-center gap-2 border border-indigo-700 shadow-sm">
+                    <i class="fa-solid fa-book-bookmark text-amber-400"></i>
+                    <span class="hidden sm:inline">Sifat & Rumus</span>
+                </button>
+                <button onclick="resetAllAnswers()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm px-3 py-2 rounded-lg font-medium transition flex items-center gap-2 border border-slate-700 shadow-sm">
+                    <i class="fa-solid fa-rotate-left text-indigo-300"></i>
+                    <span class="hidden sm:inline">Reset Jawaban</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Sidebar Navigation & Score Tracker -->
+        <aside class="lg:col-span-3 space-y-4">
+            
+            <!-- Progress & Score Widget -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Progres Latihan</span>
+                    <span id="progress-text" class="text-xs font-extrabold text-indigo-600">0 / 10 Terjawab</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-4">
+                    <div id="progress-bar" class="bg-indigo-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                    <span class="text-slate-500">Estimasi Nilai:</span>
+                    <span id="score-display" class="font-extrabold text-base text-slate-800">0 / 100</span>
+                </div>
+            </div>
+
+            <!-- Question Navigation Grid -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Pilih Nomor Soal</p>
+                <div class="grid grid-cols-5 gap-2" id="question-tabs">
+                    <!-- Dynamic Tabs injected via JS -->
+                </div>
+            </div>
+
+            <!-- Quick Guide Card -->
+            <div class="bg-gradient-to-br from-indigo-50 to-slate-100 border border-indigo-100 rounded-2xl p-4 text-xs text-indigo-950 leading-relaxed shadow-sm">
+                <div class="font-bold flex items-center gap-2 mb-1.5 text-indigo-900">
+                    <i class="fa-solid fa-circle-info text-indigo-600 text-sm"></i> Petunjuk Belajar
+                </div>
+                Kamu dapat memilih opsi jawaban terlebih dahulu untuk menguji kemampuanmu, lalu tekan tombol <strong class="text-indigo-700">"Buka Pembahasan Lengkap"</strong> untuk mempelajari seluruh penurunan rumus secara rinci!
+            </div>
+        </aside>
+
+        <!-- Question Main Area -->
+        <main class="lg:col-span-9 space-y-6">
+            
+            <div id="question-card" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-200">
+                
+                <!-- Question Top Bar -->
+                <div class="bg-slate-50/80 border-b border-slate-200 p-4 sm:p-5 flex flex-wrap justify-between items-center gap-3">
+                    <div class="flex items-center gap-3">
+                        <span id="q-badge" class="bg-indigo-600 text-white font-extrabold px-3.5 py-1 rounded-xl text-xs sm:text-sm shadow-sm">
+                            Soal #1
+                        </span>
+                        <span id="q-topic" class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-lg border border-indigo-200/60">
+                            Sifat Eksponen
+                        </span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button id="prev-btn" onclick="navigateQuestion(-1)" class="px-3.5 py-1.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-bold transition disabled:opacity-30 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-chevron-left mr-1"></i> Sebelum
+                        </button>
+                        <button id="next-btn" onclick="navigateQuestion(1)" class="px-3.5 py-1.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-bold transition disabled:opacity-30 disabled:cursor-not-allowed">
+                            Berikut <i class="fa-solid fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question Body -->
+                <div class="p-5 sm:p-7 space-y-6">
+                    
+                    <!-- Question Prompt / Text -->
+                    <div id="q-text" class="text-slate-800 text-base sm:text-lg leading-relaxed font-medium">
+                        <!-- Question content injected dynamically -->
+                    </div>
+
+                    <!-- Interactive Inputs Area -->
+                    <div id="q-interactive" class="space-y-3 pt-2">
+                        <!-- Options or tables injected dynamically -->
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                        <button id="check-btn" onclick="toggleSolution()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span id="solution-toggle-text">Buka Pembahasan Lengkap</span>
+                        </button>
+                    </div>
+
+                    <!-- Comprehensive Solution Section -->
+                    <div id="solution-box" class="hidden bg-emerald-50/70 border border-emerald-200/90 rounded-2xl p-5 sm:p-6 space-y-4 animate-fade-in shadow-inner">
+                        <div class="flex items-center justify-between border-b border-emerald-200/80 pb-3">
+                            <h3 class="font-extrabold text-emerald-950 text-base flex items-center gap-2.5">
+                                <i class="fa-solid fa-calculator text-emerald-600"></i>
+                                Pembahasan & Penurunan Solusi Matatis
+                            </h3>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full border border-emerald-300/80">Solusi Logis</span>
+                        </div>
+                        <div id="solution-content" class="text-slate-800 text-sm leading-relaxed space-y-3 math-box">
+                            <!-- Detailed step-by-step math explanation -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Formula Reference Modal -->
+    <div id="formula-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col border border-slate-100 animate-fade-in">
+            <div class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg flex items-center gap-2.5">
+                    <i class="fa-solid fa-book-open text-amber-400"></i> Ringkasan Sifat Eksponen & Logaritma
+                </h3>
+                <button onclick="toggleFormulaModal()" class="text-indigo-200 hover:text-white text-2xl font-bold transition">
+                    &times;
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-6 text-xs sm:text-sm">
+                <!-- Exponents -->
+                <div>
+                    <h4 class="font-extrabold text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-superscript text-indigo-600"></i> 1. Sifat-sifat Eksponen (Pangkat)
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$a^m \times a^n = a^{m+n}$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 font-medium">$\frac{a^m}{a^n} = a^{m-n}$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$(a^m)^n = a^{m \cdot n}$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$(a \cdot b)^n = a^n \cdot b^n$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$a^{-n} = \frac{1}{a^n}$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$a^{\frac{m}{n}} = \sqrt[n]{a^m}$</div>
+                    </div>
+                </div>
+
+                <!-- Radical Form -->
+                <div>
+                    <h4 class="font-extrabold text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-square-root-variable text-indigo-600"></i> 2. Bentuk Akar & Merasionalkan
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$\sqrt{a \cdot b} = \sqrt{a} \times \sqrt{b}$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$\frac{c}{\sqrt{a}+\sqrt{b}} = \frac{c(\sqrt{a}-\sqrt{b})}{a-b}$</div>
+                    </div>
+                </div>
+
+                <!-- Logarithm Properties -->
+                <div>
+                    <h4 class="font-extrabold text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-wave-square text-indigo-600"></i> 3. Sifat-sifat Logaritma
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700">
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$^a\log(b \cdot c) = ^a\log b + ^a\log c$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$^a\log(\frac{b}{c}) = ^a\log b - ^a\log c$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$^a\log(b^n) = n \cdot ^a\log b$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$^{a^m}\log(b^n) = \frac{n}{m} \cdot ^a\log b$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$^a\log b = \frac{^c\log b}{^c\log a} = \frac{1}{^b\log a}$</div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">$^a\log b \times ^b\log c = ^a\log c$</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 px-6 py-3 border-t border-slate-200 text-right">
+                <button onclick="toggleFormulaModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Questions with exact questions & detailed solutions
+        const questionsData = [
+            {
+                id: 1,
+                topic: "Operasi Eksponen",
+                type: "mcq",
+                text: "Jika $a = 81$, $b = 32$, dan $c = 25$. Berdasarkan informasi tersebut, manakah di antara pernyataan berikut yang bernilai benar?<br>" +
+                      "<div class='mt-3 text-xs sm:text-sm bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1.5 text-slate-700 font-normal'>" +
+                      "<div>(1) Nilai dari $a^{\\frac{3}{4}} + b^{\\frac{2}{5}} - c^{\\frac{1}{2}}$ adalah $26$.</div>" +
+                      "<div>(2) Nilai dari $a^{\\frac{1}{2}} \\times b^{\\frac{1}{5}} + c^{\\frac{3}{2}}$ adalah $143$.</div>" +
+                      "<div>(3) Nilai dari $a^{\\frac{1}{4}} + b^{\\frac{3}{5}} - c^{\\frac{1}{2}}$ adalah $6$.</div>" +
+                      "<div>(4) Nilai dari $b^{\\frac{4}{5}} + a^{\\frac{1}{2}}$ adalah $7$.</div>" +
+                      "</div>",
+                options: [
+                    { key: "A", label: "(1), (2), dan (3) SAJA yang benar" },
+                    { key: "B", label: "(1) dan (3) SAJA yang benar" },
+                    { key: "C", label: "(2) dan (4) SAJA yang benar" },
+                    { key: "D", label: "Hanya (4) yang benar" },
+                    { key: "E", label: "SEMUA pilihan benar" }
+                ],
+                correctAnswer: "A",
+                solution: `
+                    <p class="font-bold text-slate-800">Langkah 1: Ubah bilangan dasar ke dalam bentuk pangkat terdasar:</p>
+                    <ul class="list-disc pl-5 space-y-1 my-2">
+                        <li>$a = 81 = 3^4$</li>
+                        <li>$b = 32 = 2^5$</li>
+                        <li>$c = 25 = 5^2$</li>
+                    </ul>
+                    <p class="font-bold text-slate-800 mt-3">Langkah 2: Evaluasi setiap nilai pernyataan:</p>
+                    <div class="space-y-2 mt-2">
+                        <div class="bg-white p-3 rounded-xl border border-emerald-200">
+                            <strong class="text-emerald-900">Pernyataan (1):</strong><br>
+                            $a^{\\frac{3}{4}} + b^{\\frac{2}{5}} - c^{\\frac{1}{2}} = (3^4)^{\\frac{3}{4}} + (2^5)^{\\frac{2}{5}} - (5^2)^{\\frac{1}{2}} = 3^3 + 2^2 - 5 = 27 + 4 - 5 = 26$ <span class="text-emerald-700 font-bold">(BENAR)</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-emerald-200">
+                            <strong class="text-emerald-900">Pernyataan (2):</strong><br>
+                            $a^{\\frac{1}{2}} \\times b^{\\frac{1}{5}} + c^{\\frac{3}{2}} = (3^4)^{\\frac{1}{2}} \\times (2^5)^{\\frac{1}{5}} + (5^2)^{\\frac{3}{2}} = 3^2 \\times 2^1 + 5^3 = (9 \\times 2) + 125 = 18 + 125 = 143$ <span class="text-emerald-700 font-bold">(BENAR)</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-emerald-200">
+                            <strong class="text-emerald-900">Pernyataan (3):</strong><br>
+                            $a^{\\frac{1}{4}} + b^{\\frac{3}{5}} - c^{\\frac{1}{2}} = (3^4)^{\\frac{1}{4}} + (2^5)^{\\frac{3}{5}} - (5^2)^{\\frac{1}{2}} = 3^1 + 2^3 - 5 = 3 + 8 - 5 = 6$ <span class="text-emerald-700 font-bold">(BENAR)</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-rose-200">
+                            <strong class="text-rose-900">Pernyataan (4):</strong><br>
+                            $b^{\\frac{4}{5}} + a^{\\frac{1}{2}} = (2^5)^{\\frac{4}{5}} + (3^4)^{\\frac{1}{2}} = 2^4 + 3^2 = 16 + 9 = 25 \\neq 7$ <span class="text-rose-700 font-bold">(SALAH)</span>
+                        </div>
+                    </div>
+                    <p class="mt-3 font-bold text-emerald-900">Kesimpulan: Pilihan tepat adalah A. (1), (2), dan (3) SAJA yang benar.</p>
+                `
+            },
+            {
+                id: 2,
+                topic: "Penyederhanaan Eksponen",
+                type: "mcq",
+                text: "Bentuk sederhana dari ekspresi eksponen aljabar berikut adalah:<br>" +
+                      "$$\\frac{36x^4(yz)^3}{7p^2q} \\div \\frac{12xy^3z}{21p^4q^3}$$",
+                options: [
+                    { key: "A", label: "$\\frac{9x^3z^2p^2q^2}{y^2}$" },
+                    { key: "B", label: "$9x^3z^2p^2q^2$" },
+                    { key: "C", label: "$9x^5y^4z^4p^6q^4$" },
+                    { key: "D", label: "$\\frac{3x^3z^2p^2q^2}{y^2}$" },
+                    { key: "E", label: "$\\frac{18x^3z^2p^2q^2}{y^2}$" }
+                ],
+                correctAnswer: "B",
+                solution: `
+                    <p class="font-bold text-slate-800">Langkah 1: Ubah operasi pembagian pecahan menjadi perkalian dengan membalik suku kedua:</p>
+                    $$\\frac{36x^4(yz)^3}{7p^2q} \\times \\frac{21p^4q^3}{12xy^3z}$$
+                    
+                    <p class="font-bold text-slate-800 mt-2">Langkah 2: Jabarkan $(yz)^3 = y^3z^3$ lalu pisahkan koefisien angka dan variabel:</p>
+                    $$= \\left(\\frac{36 \\times 21}{7 \\times 12}\\right) \\times \\frac{x^4 \\cdot y^3 z^3 \\cdot p^4 q^3}{x \\cdot y^3 z \\cdot p^2 q}$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 3: Sederhanakan angka:</p>
+                    $$\\frac{36}{12} = 3 \\quad \\text{dan} \\quad \\frac{21}{7} = 3 \\implies 3 \\times 3 = 9$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 4: Kurangkan eksponen variabel bersesuaian ($a^m \\div a^n = a^{m-n}$):</p>
+                    <ul class="list-disc pl-5 space-y-1 my-1">
+                        <li>Variabel $x$: $x^{4-1} = x^3$</li>
+                        <li>Variabel $y$: $y^{3-3} = y^0 = 1$</li>
+                        <li>Variabel $z$: $z^{3-1} = z^2$</li>
+                        <li>Variabel $p$: $p^{4-2} = p^2$</li>
+                        <li>Variabel $q$: $q^{3-1} = q^2$</li>
+                    </ul>
+
+                    <p class="mt-3 font-bold text-emerald-900">Hasil Akhir Sederhana: $9x^3z^2p^2q^2$ (Pilihan B)</p>
+                `
+            },
+            {
+                id: 3,
+                topic: "Persamaan Eksponen",
+                type: "mcq",
+                text: "Nilai $x$ yang memenuhi persamaan eksponen berikut adalah:<br>" +
+                      "$$\\left(\\frac{1}{32}\\right)^{2x-3} = 64^{x+1}$$",
+                options: [
+                    { key: "A", label: "$-\\frac{9}{16}$" },
+                    { key: "B", label: "$\\frac{9}{16}$" },
+                    { key: "C", label: "$\\frac{9}{4}$" },
+                    { key: "D", label: "$\\frac{15}{16}$" },
+                    { key: "E", label: "$\\frac{21}{16}$" }
+                ],
+                correctAnswer: "B",
+                solution: `
+                    <p class="font-bold text-slate-800">Langkah 1: Samakan basis kedua ruas ke basis terdasar $2$:</p>
+                    <ul class="list-disc pl-5 space-y-1 my-1">
+                        <li>$\\frac{1}{32} = 32^{-1} = (2^5)^{-1} = 2^{-5}$</li>
+                        <li>$64 = 2^6$</li>
+                    </ul>
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 2: Substitusi ke persamaan asal:</p>
+                    $$(2^{-5})^{2x-3} = (2^6)^{x+1}$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 3: Kalikan eksponennya ($(a^m)^n = a^{m \\cdot n}$):</p>
+                    $$2^{-5(2x-3)} = 2^{6(x+1)}$$
+                    $$2^{-10x + 15} = 2^{6x + 6}$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 4: Karena basis sudah sama ($2$), samakan nilai pangkatnya:</p>
+                    $$-10x + 15 = 6x + 6$$
+                    $$-10x - 6x = 6 - 15$$
+                    $$-16x = -9 \\implies x = \\frac{-9}{-16} = \\frac{9}{16}$$
+
+                    <p class="mt-3 font-bold text-emerald-900">Jawaban tepat: B. $\\frac{9}{16}$</p>
+                `
+            },
+            {
+                id: 4,
+                topic: "Operasi Bentuk Akar",
+                type: "mcq",
+                text: "Bentuk sederhana dari operasi pecahan akar berikut adalah:<br>" +
+                      "$$\\frac{\\sqrt{48} - \\sqrt{108} + \\sqrt{147} + \\sqrt{300}}{\\sqrt{12}}$$ ",
+                options: [
+                    { key: "a", label: "$\\frac{15\\sqrt{3}}{2}$" },
+                    { key: "b", label: "$15$" },
+                    { key: "c", label: "$\\frac{13}{2}$" },
+                    { key: "d", label: "$\\frac{15}{2}$" },
+                    { key: "e", label: "$8$" }
+                ],
+                correctAnswer: "d",
+                solution: `
+                    <p class="font-bold text-slate-800">Langkah 1: Sederhanakan masing-masing bentuk akar ke bentuk $\\sqrt{3}$:</p>
+                    <ul class="list-disc pl-5 space-y-1 my-2">
+                        <li>$\\sqrt{48} = \\sqrt{16 \\times 3} = 4\\sqrt{3}$</li>
+                        <li>$\\sqrt{108} = \\sqrt{36 \\times 3} = 6\\sqrt{3}$</li>
+                        <li>$\\sqrt{147} = \\sqrt{49 \\times 3} = 7\\sqrt{3}$</li>
+                        <li>$\\sqrt{300} = \\sqrt{100 \\times 3} = 10\\sqrt{3}$</li>
+                        <li>$\\sqrt{12} = \\sqrt{4 \\times 3} = 2\\sqrt{3}$</li>
+                    </ul>
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 2: Sederhanakan pembilang:</p>
+                    $$\\text{Pembilang} = 4\\sqrt{3} - 6\\sqrt{3} + 7\\sqrt{3} + 10\\sqrt{3} = (4 - 6 + 7 + 10)\\sqrt{3} = 15\\sqrt{3}$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 3: Bagikan pembilang dengan penyebut:</p>
+                    $$\\text{Hasil} = \\frac{15\\sqrt{3}}{2\\sqrt{3}} = \\frac{15}{2}$$
+
+                    <p class="mt-3 font-bold text-emerald-900">Jawaban tepat: d. $\\frac{15}{2}$</p>
+                `
+            },
+            {
+                id: 5,
+                topic: "Merasionalkan Bentuk Akar",
+                type: "mcq",
+                text: "Bentuk rasional dari pecahan berikut adalah:<br>" +
+                      "$$\\frac{8\\sqrt{3}}{3\\sqrt{2}-4}$$",
+                options: [
+                    { key: "A", label: "$12\\sqrt{6} + 16\\sqrt{3}$" },
+                    { key: "B", label: "$\\frac{24+4\\sqrt{21}}{5}$" },
+                    { key: "C", label: "$24 + 4\\sqrt{21}$" },
+                    { key: "D", label: "$\\frac{12+4\\sqrt{21}}{5}$" },
+                    { key: "E", label: "Bentuk Rasional Lain" }
+                ],
+                correctAnswer: "A",
+                solution: `
+                    <p class="font-bold text-slate-800">Langkah 1: Kalikan pembilang dan penyebut dengan sekawan penyebut $(3\\sqrt{2} + 4)$:</p>
+                    $$\\frac{8\\sqrt{3}}{3\\sqrt{2}-4} \\times \\frac{3\\sqrt{2}+4}{3\\sqrt{2}+4}$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 2: Sederhanakan penyebut dengan rumus $(a-b)(a+b) = a^2 - b^2$:</p>
+                    $$\\text{Penyebut} = (3\\sqrt{2})^2 - (4)^2 = (9 \\times 2) - 16 = 18 - 16 = 2$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 3: Kalikan distribusi pembilang:</p>
+                    $$\\text{Pembilang} = 8\\sqrt{3} \\times (3\\sqrt{2} + 4) = 24\\sqrt{6} + 32\\sqrt{3}$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 4: Bagikan pembilang dengan penyebut $2$:</p>
+                    $$\\text{Bentuk Rasional} = \\frac{24\\sqrt{6} + 32\\sqrt{3}}{2} = 12\\sqrt{6} + 16\\sqrt{3}$$
+
+                    <p class="mt-3 font-bold text-emerald-900">Hasil Rinci Rasional: $12\\sqrt{6} + 16\\sqrt{3}$ (Opsi A)</p>
+                `
+            },
+            {
+                id: 6,
+                topic: "Persamaan Logaritma",
+                type: "mcq",
+                text: "Diketahui persamaan logaritma sebagai berikut:<br>" +
+                      "$$^a\\log 12 + 2 \\cdot ^a\\log 5 - ^a\\log 3 + ^a\\log 2 - ^a\\log 8 = 2$$" +
+                      "Nilai dasar $a$ yang memenuhi adalah...",
+                options: [
+                    { key: "A", label: "$2$" },
+                    { key: "B", label: "$5$" },
+                    { key: "C", label: "$10$" },
+                    { key: "D", label: "$20$" },
+                    { key: "E", label: "$100$" }
+                ],
+                correctAnswer: "B",
+                solution: `
+                    <p class="font-bold text-slate-800">Langkah 1: Gunakan sifat-sifat logaritma untuk menggabungkan ruas kiri:</p>
+                    <ul class="list-disc pl-5 space-y-1 my-1">
+                        <li>$n \\cdot ^a\\log x = ^a\\log (x^n) \\implies 2 \\cdot ^a\\log 5 = ^a\\log (5^2) = ^a\\log 25$</li>
+                        <li>$^a\\log x + ^a\\log y = ^a\\log(x \\cdot y)$</li>
+                        <li>$^a\\log x - ^a\\log y = ^a\\log\\left(\\frac{x}{y}\\right)$</li>
+                    </ul>
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 2: Gabungkan seluruh numerus logaritma:</p>
+                    $$^a\\log \\left( \\frac{12 \\times 25 \\times 2}{3 \\times 8} \\right) = 2$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 3: Hitung hasil perkalian dan pembagian numerus:</p>
+                    $$\\text{Numerus} = \\frac{600}{24} = 25$$
+
+                    <p class="font-bold text-slate-800 mt-2">Langkah 4: Cari nilai $a$:</p>
+                    $$^a\\log 25 = 2 \\implies a^2 = 25 \\implies a = 5 \\quad (a > 0, a \\neq 1)$$
+
+                    <p class="mt-3 font-bold text-emerald-900">Jawaban tepat: B. 5</p>
+                `
+            },
+            {
+                id: 7,
+                topic: "Penerapan Soal Cerita - Luas Seng (Kompos Organik)",
+                type: "tf_table",
+                text: "<strong>Konteks: Bak Penampungan Kompos Organik Desa Indah Mandiri</strong><br>" +
+                      "Untuk mengolah sampah organik, warga dibuatkan 3 model bak penampungan dari seng tebal:<br>" +
+                      "<ul class='list-disc pl-5 mt-2 space-y-1 text-slate-700 font-normal'>" +
+                      "<li><strong>Model I (Tabung):</strong> Diameter $14\\sqrt{3}\\text{ cm}$, Tinggi $30\\sqrt{2}\\text{ cm}$</li>" +
+                      "<li><strong>Model II (Balok):</strong> Panjang $20\\sqrt{2}\\text{ cm}$, Lebar $10\\sqrt{3}\\text{ cm}$, Tinggi $40\\text{ cm}$</li>" +
+                      "<li><strong>Model III (Kubus):</strong> Panjang Rusuk $30\\sqrt{2}\\text{ cm}$</li>" +
+                      "</ul><br>" +
+                      "Tentukan kebenaran setiap pernyataan berikut berdasarkan data di atas!",
+                statements: [
+                    {
+                        id: "s7_1",
+                        text: "Luas seng yang dibutuhkan untuk membuat alas bak penampung kompos model I adalah $462\\text{ cm}^2$",
+                        correct: true
+                    },
+                    {
+                        id: "s7_2",
+                        text: "Luas seng yang dibutuhkan untuk bak penampung kompos model II tanpa tutup adalah $200(\\sqrt{6} + 8\\sqrt{2} + 4\\sqrt{3})\\text{ cm}^2$",
+                        correct: true
+                    },
+                    {
+                        id: "s7_3",
+                        text: "Selisih luas seng yang dibutuhkan untuk membuat alas bak penampung kompos model II dan III adalah $200(9 - \\sqrt{6})\\text{ cm}^2$",
+                        correct: true
+                    }
+                ],
+                solution: `
+                    <p class="font-bold text-slate-800">Analisis Kebenaran Pernyataan:</p>
+                    <div class="space-y-3 mt-2">
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                            <strong class="text-indigo-900">1. Alas Model I (Lingkaran):</strong><br>
+                            Jari-jari $r = \\frac{14\\sqrt{3}}{2} = 7\\sqrt{3}\\text{ cm}$.<br>
+                            $$\\text{Luas Alas I} = \\pi r^2 = \\frac{22}{7} \\times (7\\sqrt{3})^2 = \\frac{22}{7} \\times 49 \\times 3 = 22 \\times 7 \\times 3 = 462\\text{ cm}^2 \\quad \\mathbf{(BENAR)}$$
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                            <strong class="text-indigo-900">2. Luas permukaan Model II (Balok Tanpa Tutup):</strong><br>
+                            $$\\text{Luas} = (p \\times l) + 2(p \\times t) + 2(l \\times t)$$
+                            $$p \\cdot l = 20\\sqrt{2} \\times 10\\sqrt{3} = 200\\sqrt{6}$$
+                            $$2(p \\cdot t) = 2(20\\sqrt{2} \\times 40) = 1600\\sqrt{2}$$
+                            $$2(l \\cdot t) = 2(10\\sqrt{3} \\times 40) = 800\\sqrt{3}$$
+                            $$\\text{Total Luas} = 200\\sqrt{6} + 1600\\sqrt{2} + 800\\sqrt{3} = 200(\\sqrt{6} + 8\\sqrt{2} + 4\\sqrt{3})\\text{ cm}^2 \\quad \\mathbf{(BENAR)}$$
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+                            <strong class="text-indigo-900">3. Selisih Alas Model II & III:</strong><br>
+                            $$\\text{Alas III (Persegi)} = s^2 = (30\\sqrt{2})^2 = 900 \\times 2 = 1800\\text{ cm}^2$$
+                            $$\\text{Alas II} = 200\\sqrt{6}\\text{ cm}^2$$
+                            $$\\text{Selisih} = 1800 - 200\\sqrt{6} = 200(9 - \\sqrt{6})\\text{ cm}^2 \\quad \\mathbf{(BENAR)}$$
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 8,
+                topic: "Penerapan Soal Cerita - Daya Tampung/Volume",
+                type: "checkbox_multi",
+                text: "<strong>Daya Tampung Maksimum Kompos Organik (Model I, II, III)</strong><br>" +
+                      "Berdasarkan ukuran bak penampung dari soal nomor 7, beri tanda centang (✓) pada kotak di depan pernyataan yang BENAR (Jawaban benar dapat lebih dari satu).",
+                options: [
+                    { id: "opt_8_1", text: "Daya tampung maksimum kompos organik pada model I adalah $4,62\\sqrt{6}\\text{ dm}^3$", correct: false },
+                    { id: "opt_8_2", text: "Daya tampung maksimum kompos pada model II adalah $8\\sqrt{6}\\text{ dm}^3$", correct: true },
+                    { id: "opt_8_3", text: "Bak penampung kompos model III menampung paling sedikit kompos organik.", correct: false },
+                    { id: "opt_8_4", text: "Daya tampung maksimum kompos pada model I lebih sedikit dari model III", correct: true }
+                ],
+                solution: `
+                    <p class="font-bold text-slate-800">Perhitungan Volume Masing-Masing Bak ($1\\text{ dm}^3 = 1000\\text{ cm}^3$):</p>
+                    <ul class="list-disc pl-5 space-y-2 my-2 text-slate-700">
+                        <li>
+                            <strong>Volume Model I (Tabung):</strong><br>
+                            $V_I = \\text{Luas alas} \\times t = 462 \\times 30\\sqrt{2} = 13860\\sqrt{2}\\text{ cm}^3 = 13,86\\sqrt{2}\\text{ dm}^3 \\approx 19,60\\text{ dm}^3$
+                        </li>
+                        <li>
+                            <strong>Volume Model II (Balok):</strong><br>
+                            $V_{II} = p \\times l \\times t = 20\\sqrt{2} \\times 10\\sqrt{3} \\times 40 = 8000\\sqrt{6}\\text{ cm}^3 = 8\\sqrt{6}\\text{ dm}^3 \\approx 19,60\\text{ dm}^3$ <span class="text-emerald-700 font-bold">(Kotak 2 BENAR)</span>
+                        </li>
+                        <li>
+                            <strong>Volume Model III (Kubus):</strong><br>
+                            $V_{III} = s^3 = (30\\sqrt{2})^3 = 27000 \\times 2\\sqrt{2} = 54000\\sqrt{2}\\text{ cm}^3 = 54\\sqrt{2}\\text{ dm}^3 \\approx 76,37\\text{ dm}^3$
+                        </li>
+                    </ul>
+                    <p class="mt-3 font-bold text-slate-800">Evaluasi Pernyataan Tambahan:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Model III menampung paling BANYAK ($54\\sqrt{2}\\text{ dm}^3$), jadi Kotak 3 SALAH.</li>
+                        <li>Model I ($13,86\\sqrt{2}\\text{ dm}^3$) menampung lebih sedikit dari Model III ($54\\sqrt{2}\\text{ dm}^3$), jadi Kotak 4 BENAR.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 9,
+                topic: "Pemisalan Bentuk Logaritma",
+                type: "checkbox_multi",
+                text: "Diketahui $^2\\log 3 = a$ dan $^3\\log 5 = b$. Berdasarkan informasi tersebut, centang (✓) pada kotak untuk pernyataan yang BENAR! (Jawaban benar dapat lebih dari satu)",
+                options: [
+                    { id: "opt_9_1", text: "$^{25}\\log 8 = \\frac{3}{2ab}$", correct: true },
+                    { id: "opt_9_2", text: "$^{30}\\log 12 = \\frac{2+a}{1+a+ab}$", correct: true },
+                    { id: "opt_9_3", text: "$^{50}\\log 18 = \\frac{1+2a}{1+2ab}$", correct: false },
+                    { id: "opt_9_4", text: "$^{75}\\log 90 = \\frac{1+2a+ab}{a+2ab}$", correct: false }
+                ],
+                solution: `
+                    <p class="font-bold text-slate-800">Langkah Awal Penurunan Basis Logaritma:</p>
+                    <p>Diketahui $^2\\log 3 = a$ dan $^3\\log 5 = b$.<br>
+                    Maka $^2\\log 5 = ^2\\log 3 \\times ^3\\log 5 = a \\cdot b = ab$.</p>
+
+                    <p class="font-bold text-slate-800 mt-3">Uji Pembuktian Pernyataan:</p>
+                    <div class="space-y-2 mt-2">
+                        <div class="bg-white p-3 rounded-xl border border-emerald-200">
+                            <strong class="text-emerald-900">1. Pembuktian $^{25}\\log 8$:</strong><br>
+                            $^{25}\\log 8 = \\frac{^2\\log 8}{^2\\log 25} = \\frac{^2\\log(2^3)}{^2\\log(5^2)} = \\frac{3}{2 \\cdot ^2\\log 5} = \\frac{3}{2ab} \\quad \\mathbf{(BENAR)}$
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-emerald-200">
+                            <strong class="text-emerald-900">2. Pembuktian $^{30}\\log 12$:</strong><br>
+                            $^{30}\\log 12 = \\frac{^2\\log 12}{^2\\log 30} = \\frac{^2\\log(2^2 \\times 3)}{^2\\log(2 \\times 3 \\times 5)} = \\frac{2 + ^2\\log 3}{1 + ^2\\log 3 + ^2\\log 5} = \\frac{2+a}{1+a+ab} \\quad \\mathbf{(BENAR)}$
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 10,
+                topic: "Aplikasi Eksponen - Teh Tarik Pak Ali",
+                type: "tf_table",
+                text: "<strong>Konteks: Penjualan Teh Tarik Pak Ali</strong><br>" +
+                      "Pak Ali menjual teh tarik berkualitas yang dikemas dalam gelas berkapasitas $2^{-2}\\text{ liter}$.<br>" +
+                      "• Minggu lalu Pak Ali berhasil menjual $2^8$ gelas.<br>" +
+                      "• Minggu ini Pak Ali berhasil menjual $2^9$ gelas.<br><br>" +
+                      "Tentukan nilai Benar atau Salah untuk setiap pernyataan berikut!",
+                statements: [
+                    { id: "s10_1", text: "Jumlah cangkir yang terjual minggu ini ($2^9$) adalah dua kali lipat lebih banyak dari minggu lalu ($2^8$).", correct: true },
+                    { id: "s10_2", text: "$2^{-2}$ sama dengan $-4$.", correct: false },
+                    { id: "s10_3", text: "Volume isi satu cangkir teh tarik ($2^{-2}\\text{ liter}$) sama dengan $250\\text{ mL}$.", correct: true },
+                    { id: "s10_4", text: "Untuk menampung seluruh penjualan minggu lalu, volume total teh tarik yang dibutuhkan minimal $64\\text{ liter}$.", correct: true }
+                ],
+                solution: `
+                    <p class="font-bold text-slate-800">Langkah Analisis Kebenaran Pernyataan:</p>
+                    <div class="space-y-2 mt-2">
+                        <div class="bg-white p-3 rounded-xl border border-slate-200">
+                            <strong class="text-indigo-900">1. Pernyataan 1 (BENAR):</strong><br>
+                            $2^9 = 2 \\times 2^8 = 2 \\times 256 = 512$ cangkir (Tepat 2 kali lipat minggu lalu).
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-slate-200">
+                            <strong class="text-indigo-900">2. Pernyataan 2 (SALAH):</strong><br>
+                            $2^{-2} = \\frac{1}{2^2} = \\frac{1}{4} = 0,25 \\neq -4$. Pangkat negatif menunjukkan bilangan pecahan positif, bukan bilangan negatif.
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-slate-200">
+                            <strong class="text-indigo-900">3. Pernyataan 3 (BENAR):</strong><br>
+                            $2^{-2}\\text{ liter} = \\frac{1}{4}\\text{ liter} = 0,25 \\times 1000\\text{ mL} = 250\\text{ mL}$.
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-slate-200">
+                            <strong class="text-indigo-900">4. Pernyataan 4 (BENAR):</strong><br>
+                            Total Volume $= 2^8 \\times 2^{-2} = 2^{8-2} = 2^6 = 64\\text{ liter}$.
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // App state variables
+        let currentQIndex = 0;
+        let userAnswers = {};
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderTabs();
+            loadQuestion(0);
+        });
+
+        // Render Navigation Tabs
+        function renderTabs() {
+            const container = document.getElementById("question-tabs");
+            container.innerHTML = "";
+            questionsData.forEach((q, idx) => {
+                const btn = document.createElement("button");
+                btn.id = `tab-btn-${idx}`;
+                btn.onclick = () => loadQuestion(idx);
+                btn.className = `p-2 rounded-xl text-xs font-bold transition flex flex-col items-center justify-center border ${
+                    idx === currentQIndex
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                }`;
+                btn.innerHTML = `<span>Soal ${q.id}</span>`;
+                container.appendChild(btn);
+            });
+        }
+
+        // Load Selected Question into UI
+        function loadQuestion(index) {
+            currentQIndex = index;
+            const q = questionsData[index];
+
+            // Update Tab Highlight
+            questionsData.forEach((_, idx) => {
+                const tab = document.getElementById(`tab-btn-${idx}`);
+                if (tab) {
+                    if (idx === currentQIndex) {
+                        tab.className = "p-2 rounded-xl text-xs font-bold transition flex flex-col items-center justify-center bg-indigo-600 text-white border-indigo-600 shadow-sm";
+                    } else {
+                        const isAnswered = userAnswers[questionsData[idx].id] !== undefined;
+                        tab.className = `p-2 rounded-xl text-xs font-bold transition flex flex-col items-center justify-center border ${
+                            isAnswered ? "bg-emerald-50 text-emerald-700 border-emerald-300" : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                        }`;
+                    }
+                }
+            });
+
+            // Update Headers & Text
+            document.getElementById("q-badge").innerText = `Soal #${q.id}`;
+            document.getElementById("q-topic").innerText = q.topic;
+            document.getElementById("q-text").innerHTML = q.text;
+
+            // Prev/Next buttons state
+            document.getElementById("prev-btn").disabled = (index === 0);
+            document.getElementById("next-btn").disabled = (index === questionsData.length - 1);
+
+            // Hide solution by default on question change
+            const solBox = document.getElementById("solution-box");
+            solBox.classList.add("hidden");
+            document.getElementById("solution-toggle-text").innerText = "Buka Pembahasan Lengkap";
+
+            // Render Solution Content
+            document.getElementById("solution-content").innerHTML = q.solution;
+
+            // Render Input Options Area based on type
+            const interactiveArea = document.getElementById("q-interactive");
+            interactiveArea.innerHTML = "";
+
+            if (q.type === "mcq") {
+                q.options.forEach(opt => {
+                    const savedAns = userAnswers[q.id];
+                    const isChecked = savedAns === opt.key;
+                    const optDiv = document.createElement("label");
+                    optDiv.className = `flex items-center p-3.5 sm:p-4 rounded-xl border cursor-pointer transition ${
+                        isChecked ? "bg-indigo-50/80 border-indigo-500 text-indigo-950 font-semibold" : "bg-slate-50 border-slate-200 hover:bg-slate-100 text-slate-800"
+                    }`;
+                    optDiv.innerHTML = `
+                        <input type="radio" name="q_mcq_${q.id}" value="${opt.key}" ${isChecked ? "checked" : ""} onchange="selectMcq('${opt.key}')" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-3 text-xs sm:text-sm font-bold mr-2 text-indigo-600">${opt.key}.</span>
+                        <span class="text-xs sm:text-sm">${opt.label}</span>
+                    `;
+                    interactiveArea.appendChild(optDiv);
+                });
+            } else if (q.type === "tf_table") {
+                const tableContainer = document.createElement("div");
+                tableContainer.className = "overflow-x-auto border border-slate-200 rounded-2xl shadow-sm bg-white";
+                let tableHTML = `
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100/80 text-slate-700 border-b border-slate-200 font-bold">
+                                <th class="p-3.5">Pernyataan</th>
+                                <th class="p-3.5 text-center w-20">Benar</th>
+                                <th class="p-3.5 text-center w-20">Salah</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                `;
+
+                q.statements.forEach((stmt) => {
+                    const stmtAns = userAnswers[q.id] ? userAnswers[q.id][stmt.id] : undefined;
+                    tableHTML += `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3.5 font-medium text-slate-800">${stmt.text}</td>
+                            <td class="p-3.5 text-center">
+                                <input type="radio" name="${stmt.id}" value="true" ${stmtAns === true ? "checked" : ""} onchange="selectTF('${stmt.id}', true)" class="w-4 h-4 text-emerald-600">
+                            </td>
+                            <td class="p-3.5 text-center">
+                                <input type="radio" name="${stmt.id}" value="false" ${stmtAns === false ? "checked" : ""} onchange="selectTF('${stmt.id}', false)" class="w-4 h-4 text-rose-600">
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `</tbody></table>`;
+                tableContainer.innerHTML = tableHTML;
+                interactiveArea.appendChild(tableContainer);
+            } else if (q.type === "checkbox_multi") {
+                q.options.forEach(opt => {
+                    const currentMap = userAnswers[q.id] || {};
+                    const isChecked = !!currentMap[opt.id];
+                    const optDiv = document.createElement("label");
+                    optDiv.className = `flex items-center p-3.5 rounded-xl border cursor-pointer transition ${
+                        isChecked ? "bg-indigo-50 border-indigo-400 text-indigo-950 font-semibold" : "bg-slate-50 border-slate-200 hover:bg-slate-100"
+                    }`;
+                    optDiv.innerHTML = `
+                        <input type="checkbox" value="${opt.id}" ${isChecked ? "checked" : ""} onchange="toggleMultiCheckbox('${opt.id}')" class="w-4 h-4 text-indigo-600 rounded">
+                        <span class="ml-3 text-xs sm:text-sm">${opt.text}</span>
+                    `;
+                    interactiveArea.appendChild(optDiv);
+                });
+            }
+
+            // Typeset LaTeX math via MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // Choice selection functions
+        function selectMcq(key) {
+            const q = questionsData[currentQIndex];
+            userAnswers[q.id] = key;
+            loadQuestion(currentQIndex);
+            updateProgress();
+        }
+
+        function selectTF(stmtId, val) {
+            const q = questionsData[currentQIndex];
+            if (!userAnswers[q.id]) userAnswers[q.id] = {};
+            userAnswers[q.id][stmtId] = val;
+            updateProgress();
+        }
+
+        function toggleMultiCheckbox(optId) {
+            const q = questionsData[currentQIndex];
+            if (!userAnswers[q.id]) userAnswers[q.id] = {};
+            userAnswers[q.id][optId] = !userAnswers[q.id][optId];
+            loadQuestion(currentQIndex);
+            updateProgress();
+        }
+
+        // Navigation
+        function navigateQuestion(step) {
+            const newIdx = currentQIndex + step;
+            if (newIdx >= 0 && newIdx < questionsData.length) {
+                loadQuestion(newIdx);
+            }
+        }
+
+        // Toggle solution visibility
+        function toggleSolution() {
+            const solBox = document.getElementById("solution-box");
+            const btnText = document.getElementById("solution-toggle-text");
+            if (solBox.classList.contains("hidden")) {
+                solBox.classList.remove("hidden");
+                btnText.innerText = "Tutup Pembahasan";
+            } else {
+                solBox.classList.add("hidden");
+                btnText.innerText = "Buka Pembahasan Lengkap";
+            }
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        // Calculate and update score progress
+        function updateProgress() {
+            let answeredCount = 0;
+            let correctCount = 0;
+
+            questionsData.forEach(q => {
+                const uAns = userAnswers[q.id];
+                if (uAns !== undefined) {
+                    if (q.type === "mcq") {
+                        answeredCount++;
+                        if (uAns === q.correctAnswer) correctCount++;
+                    } else if (q.type === "tf_table") {
+                        const totalStmts = q.statements.length;
+                        const answeredStmts = Object.keys(uAns).length;
+                        if (answeredStmts === totalStmts) answeredCount++;
+                        
+                        let allCorrect = true;
+                        q.statements.forEach(s => {
+                            if (uAns[s.id] !== s.correct) allCorrect = false;
+                        });
+                        if (allCorrect && answeredStmts === totalStmts) correctCount++;
+                    } else if (q.type === "checkbox_multi") {
+                        if (Object.keys(uAns).length > 0) answeredCount++;
+                        let matches = true;
+                        q.options.forEach(opt => {
+                            const isUserChecked = !!uAns[opt.id];
+                            if (isUserChecked !== opt.correct) matches = false;
+                        });
+                        if (matches) correctCount++;
+                    }
+                }
+            });
+
+            document.getElementById("progress-text").innerText = `${answeredCount} / 10 Terjawab`;
+            const pct = (answeredCount / 10) * 100;
+            document.getElementById("progress-bar").style.width = `${pct}%`;
+
+            document.getElementById("score-display").innerText = `${correctCount * 10} / 100`;
+        }
+
+        // Reset All User Answers
+        function resetAllAnswers() {
+            userAnswers = {};
+            loadQuestion(0);
+            updateProgress();
+        }
+
+        // Formula Modal Handler
+        function toggleFormulaModal() {
+            const modal = document.getElementById("formula-modal");
+            modal.classList.toggle("hidden");
+        }
+    </script>
+</body>
+</html>
